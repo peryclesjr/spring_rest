@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,12 +46,14 @@ public class PersonServices {
         return responseEntity;
     }
 
-    public List<ResponseEntity<PersonVO>> findAll(){
-        List<Person> people=  repository.findAll();
-        List<ResponseEntity<PersonVO>> responseEntityList = people.stream()
-                .map(p -> new ResponseEntity<PersonVO>(DozerConverter.parseObject(p, PersonVO.class), HttpStatus.OK))
-                .collect(Collectors.toList());
-        return responseEntityList;
+    public List<PersonVO> findAll(){
+        List<PersonVO> people=  DozerConverter.parseListObject(repository.findAll(), PersonVO.class);
+//        List<ResponseEntity<PersonVO>> responseEntityList = new ArrayList<>();
+
+//        for(Person person : people){
+//            responseEntityList.add(new ResponseEntity<PersonVO>(DozerConverter.parseObject(people, PersonVO.class), HttpStatus.OK));
+//        }
+        return people;
     }
 
     public void delete(Long id){

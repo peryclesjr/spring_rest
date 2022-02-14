@@ -21,22 +21,24 @@ public class PersonController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<ResponseEntity<PersonVO>> findAll(){
+    @GetMapping(produces = {"application/json", "application/xml", "application/x-yaml"})
+    public List<PersonVO> findAll(){
         return service.findAll();
     }
 
-    @GetMapping(path="/{id}")
+    @GetMapping(value="/{id}", produces = {"application/json", "application/xml"})
     public ResponseEntity<PersonVO> findById(@PathVariable(value="id") Long id){
         return service.findById(id);
     }
 
-    @PostMapping
+    @PostMapping( consumes = {"application/json", "application/xml"},
+                    produces = {"application/json", "application/xml"})
     public ResponseEntity<PersonVO> createPerson(@RequestBody PersonVO person){
         return new ResponseEntity<PersonVO>(service.create(person), HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping( consumes = {"application/json", "application/xml"},
+            produces = {"application/json", "application/xml"})
     public ResponseEntity<PersonVO> updatePerson(@RequestBody PersonVO person){
         return new ResponseEntity<PersonVO>(service.update(person), HttpStatus.OK);
     }
