@@ -3,6 +3,8 @@ package br.com.perycles.spring.springbootrest.controller;
 import br.com.perycles.spring.springbootrest.data.vo.PersonVO;
 import br.com.perycles.spring.springbootrest.model.Person;
 import br.com.perycles.spring.springbootrest.service.PersonServices;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,20 @@ public class PersonController {
     }
 
     @GetMapping(produces = {"application/json", "application/xml", "application/x-yaml"})
-    public List<PersonVO> findAll(){
+    public List<ResponseEntity<PersonVO>> findAll(){
         return service.findAll();
     }
 
     @GetMapping(value="/{id}", produces = {"application/json", "application/xml"})
     public ResponseEntity<PersonVO> findById(@PathVariable(value="id") Long id){
         return service.findById(id);
+    }
+
+    @GetMapping(value="findWithlink/{id}", produces = {"application/json", "application/xml"})
+    public ResponseEntity<PersonVO> findByIdLink(@PathVariable(value="id") Long id){
+        PersonVO personVO = service.findByHiperMedia(id);
+        personVO.add(WebMvcLinkBuilder.linkTo(PersonController.class).slash(personVO.getId()).withSelfRel());
+        return new ResponseEntity<PersonVO>(personVO, HttpStatus.OK) ;
     }
 
     @PostMapping( consumes = {"application/json", "application/xml"},

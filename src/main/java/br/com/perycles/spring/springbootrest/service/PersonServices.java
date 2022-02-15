@@ -46,14 +46,21 @@ public class PersonServices {
         return responseEntity;
     }
 
-    public List<PersonVO> findAll(){
-        List<PersonVO> people=  DozerConverter.parseListObject(repository.findAll(), PersonVO.class);
-//        List<ResponseEntity<PersonVO>> responseEntityList = new ArrayList<>();
+    public PersonVO findByHiperMedia(Long id){
+        Person person =  repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("No records found for this ID"));
 
-//        for(Person person : people){
-//            responseEntityList.add(new ResponseEntity<PersonVO>(DozerConverter.parseObject(people, PersonVO.class), HttpStatus.OK));
-//        }
-        return people;
+        PersonVO personVO = DozerConverter.parseObject(person, PersonVO.class);
+        return personVO;
+    }
+
+    public List<ResponseEntity<PersonVO>> findAll(){
+        List<PersonVO> people=  DozerConverter.parseListObject(repository.findAll(), PersonVO.class);
+        List<ResponseEntity<PersonVO>> responseEntityList = new ArrayList<>();
+
+        for(PersonVO person : people){
+            responseEntityList.add(new ResponseEntity<PersonVO>(DozerConverter.parseObject(people, PersonVO.class), HttpStatus.OK));
+        }
+        return responseEntityList;
     }
 
     public void delete(Long id){
